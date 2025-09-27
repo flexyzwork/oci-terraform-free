@@ -53,22 +53,22 @@ vim terraform.tfvars
 ### 3. Terraform 실행
 ```bash
 # Terraform 초기화
-terraform init
+t init
 
 # 실행 계획 확인
-terraform plan
+t plan
 
 # 리소스 생성
-terraform apply
+t apply
 ```
 
 ### 4. 리소스 확인
 ```bash
 # 출력 값 확인
-terraform output
+t output
 
 # SSH 연결 명령어 확인
-terraform output ssh_connection_commands
+t output ssh_connection_commands
 ```
 
 ## 파일 구조
@@ -105,17 +105,52 @@ terraform output ssh_connection_commands
 
 ## 연결 테스트
 
-생성 후 다음 명령어로 연결을 테스트할 수 있습니다:
+### SSH 접속
 
+**기본 방법:**
 ```bash
 # A1 인스턴스 SSH 접속
 ssh -i ~/.ssh/codelab.pem ubuntu@<A1_PUBLIC_IP>
 
-# 내부 네트워크 ping 테스트
-ping <MICRO_INSTANCE_PRIVATE_IP>
+# Micro 인스턴스 1 SSH 접속
+ssh -i ~/.ssh/codelab.pem ubuntu@<MICRO1_PUBLIC_IP>
+
+# Micro 인스턴스 2 SSH 접속
+ssh -i ~/.ssh/codelab.pem ubuntu@<MICRO2_PUBLIC_IP>
+```
+
+**별칭 사용 (권장):**
+```bash
+# IP 주소를 Terraform output에서 확인
+t output sshConnectionCommands
+# 결과 예시:
+# "a1_instance" = "ssh -i ~/.ssh/codelab.pem ubuntu@xxx.xxx.xxx.xxx"
+# "micro_instance_1" = "ssh -i ~/.ssh/codelab.pem ubuntu@yyy.yyy.yyy.yyy"
+# "micro_instance_2" = "ssh -i ~/.ssh/codelab.pem ubuntu@zzz.zzz.zzz.zzz"
+
+# 별칭으로 간편 접속 (IP 주소가 이미 설정되어 있음)
+a1  # A1 인스턴스
+m1  # Micro 인스턴스 1
+m2  # Micro 인스턴스 2
+```
+
+### 네트워크 및 서비스 테스트
+
+```bash
+# 웹 URL 확인
+t output webUrls
+# 결과 예시:
+# "a1_instance" = "http://xxx.xxx.xxx.xxx"
+# "micro_instance_1" = "http://yyy.yyy.yyy.yyy"
+# "micro_instance_2" = "http://zzz.zzz.zzz.zzz"
 
 # Nginx 웹 서버 확인
-curl http://<PUBLIC_IP>
+curl http://<A1_PUBLIC_IP>     # A1 인스턴스
+curl http://<MICRO1_PUBLIC_IP> # Micro 인스턴스 1
+curl http://<MICRO2_PUBLIC_IP> # Micro 인스턴스 2
+
+# 내부 네트워크 ping 테스트 (SSH 접속 후)
+ping <MICRO_INSTANCE_PRIVATE_IP>
 ```
 
 ## 정리
@@ -123,7 +158,7 @@ curl http://<PUBLIC_IP>
 사용이 끝나면 다음 명령어로 모든 리소스를 삭제할 수 있습니다:
 
 ```bash
-terraform destroy
+t destroy
 ```
 
 ## Remote Backend 설정
@@ -187,6 +222,24 @@ oci os object list --bucket-name terraform-state-bucket
 curl -LO "https://releases.hashicorp.com/terraform/1.13.3/terraform_1.13.3_darwin_arm64.zip"
 unzip terraform_1.13.3_darwin_arm64.zip
 mv terraform ~/bin/terraform_latest
+
+# 별칭 설정으로 기본 명령어로 사용 (권장)
+echo 'alias terraform="~/bin/terraform_latest"' >> ~/.zshrc
+echo 'alias t="~/bin/terraform_latest"' >> ~/.zshrc
+
+# SSH 접속 별칭 설정 (선택사항)
+# 먼저 IP 주소 확인: t output sshConnectionCommands
+# 아래 IP를 실제 값으로 교체하세요
+echo 'alias a1="ssh -i ~/.ssh/codelab.pem ubuntu@YOUR_A1_IP"' >> ~/.zshrc
+echo 'alias m1="ssh -i ~/.ssh/codelab.pem ubuntu@YOUR_MICRO1_IP"' >> ~/.zshrc
+echo 'alias m2="ssh -i ~/.ssh/codelab.pem ubuntu@YOUR_MICRO2_IP"' >> ~/.zshrc
+
+source ~/.zshrc
+
+# 버전 확인
+t -v
+# 또는
+terraform version
 ```
 
 2. **OCI 네임스페이스 확인**
@@ -217,7 +270,7 @@ terraform {
 
 5. **상태 마이그레이션 실행**
 ```bash
-echo "yes" | ~/bin/terraform_latest init -migrate-state
+echo "yes" | t init -migrate-state
 # 결과: Successfully configured the backend "oci"!
 ```
 
@@ -227,7 +280,7 @@ echo "yes" | ~/bin/terraform_latest init -migrate-state
 oci os object list --bucket-name terraform-state-bucket
 
 # Terraform plan 정상 작동 확인
-~/bin/terraform_latest plan
+t plan
 # 결과: No changes. Your infrastructure matches the configuration.
 ```
 
