@@ -1,0 +1,58 @@
+# Terraform 관련 파일
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+!*.tfvars.example
+.terraform/
+.terraform.lock.hcl
+terraform.rc
+.terraformrc
+
+# Crash log files
+crash.log
+crash.*.log
+
+# Override files
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# CLI configuration files
+.terraformrc
+terraform.rc
+
+# 백업 파일
+*.backup
+*.bak
+*~
+
+# IDE 설정 파일
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS 생성 파일
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# 로그 파일
+*.log
+
+# SSH 키 파일
+*.pem
+*.key
+id_rsa*
+id_ecdsa*
+id_ed25519*
+
+# 임시 파일
+*.tmp
+*.temp

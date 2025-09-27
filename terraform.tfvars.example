@@ -1,0 +1,21 @@
+# Terraform 변수 설정 예시
+# 이 파일을 terraform.tfvars로 복사하고 실제 값을 입력하세요
+
+# OCI 인증 정보 - 본인의 값으로 수정하세요
+tenancy_ocid     = "ocid1.tenancy.oc1..aaaaaaaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+user_ocid        = "ocid1.user.oc1..aaaaaaaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+fingerprint      = "xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx"
+private_key_path = "~/.ssh/codelab.pem"
+region           = "ap-seoul-1"
+
+# 리소스 설정
+compartment_name = "free-tier-instances"
+
+# SSH 공개 키 - 본인의 SSH 공개 키로 수정하세요
+ssh_public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAA... your-email@example.com"
+
+# 선택적 설정 (기본값 사용 시 주석 처리 가능)
+# vcn_cidr = "10.0.0.0/16"
+# subnet_cidr = "10.0.0.0/24"
+# a1_ocpus = 4
+# a1_memory_gb = 24
