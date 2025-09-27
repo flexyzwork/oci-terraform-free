@@ -284,3 +284,7 @@ oci os object list --bucket-name terraform-state-bucket
 - 보안 리스트 규칙 확인
 - 인터넷 게이트웨이 상태 확인
 - 라우트 테이블 설정 확인
+
+
+---
+
